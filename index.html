@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Weather Finder</title>
+	<link href="css/bootstrap.min.css" rel="stylesheet">
+	<link href="css/custom.css" rel="stylesheet">
+</head>
+<body background="back2.jpg">
+	<div class="head">
+		Weather Finder
+	</div>
+	<form method="get" id="mainForm" action="search.php">
+		<div class="icon" id="display">
+			<img src="icon.png" width="130" height="130">
+		</div>
+		<div class="label">
+			<label>Type Your City Here</label>
+		</div>
+		<div class="box">
+			<input type="text" id="search" class="form-control" placeholder="Eg : Delhi" name="q" value="">
+		</div>
+		<div class="submit">
+			<p style="line-height: 40px; text-align: center;"><button type="submit" class="btn btn-warning " >Submit</button></p>
+		</div>
+	</form>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+	<script>
+		$(function() {
+			$('#mainForm').submit(function(event) {
+				event.preventDefault();
+				$.ajax({
+					url: 'http://api.openweathermap.org/data/2.5/find',
+					type: 'get',
+					dataType: 'json',
+					data: {
+						q: $("#search").val(),
+						units: "metric",
+						appid: "2de143494c0b295cca9337e1e96b00e0"
+					},
+				})
+				.done(function(data) {
+					$('#display').html('<h1 style="font-size:5em;">'+data.list[0].main.temp+'&deg;C</h1>');
+					console.log(data);
+					console.log("success");
+				})
+				.fail(function() {
+					console.log("error");
+				})
+				.always(function() {
+					console.log("complete");
+				});				
+			});
+		});
+	</script>
+</body>
+</html>
+
+
