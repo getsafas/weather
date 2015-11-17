@@ -6,55 +6,94 @@
 	<link href="css/bootstrap.min.css" rel="stylesheet">
 	<link href="css/custom.css" rel="stylesheet">
 </head>
-<body background="back2.jpg">
-	<div class="head">
+<body>
+	<div class="header">
 		Weather Finder
 	</div>
-	<form method="get" id="mainForm" action="search.php">
-		<div class="icon" id="display">
-			<img src="icon.png" width="130" height="130">
+	
+	<div class="content">
+		
+		<div class="weather-form">
+			<form method="get" id="weatherForm" action="search.php">
+				<div class="weather-icon">
+					<img src="img/icon.png" class="img-responsive">
+				</div>
+				<div class="heading-text">
+					Type Your City Here
+				</div>
+				<div class="form-group">
+					<input type="text" id="city-name" class="form-control input-lg" placeholder="Eg. Delhi">
+				</div>
+				<button type="submit" class="btn btn-info btn-lg btn-block">Get Weather <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+			</form>
 		</div>
-		<div class="label">
-			<label>Type Your City Here</label>
+		
+		<div class="weather-results" style="display:none;">
+			<div class="weather-image">
+				<img class="img-responsive" id="weather-img" src="img/weather.png">
+			</div>
+		    <h4>Weather in <strong><span class="data-city-name"></span></strong></h4>
+			<h1><span class="data-temp"></span>&deg;C</h1>
+			<h2><span class="data-weather"></span></h2>
+			<div class="row">
+				<div class="col-sm-6">
+					Humidity<br>
+					<strong><span class="data-humidity"></span>%</strong>
+				</div>
+				<div class="col-sm-6">
+					Pressure<br>
+					<strong><span class="data-pressure"></span>kPa</strong>
+				</div>
+				<div class="col-sm-12">
+					Wind<br>
+					<strong><span class="data-wind"></span>km/hr</strong>
+				</div>
+			</div>
 		</div>
-		<div class="box">
-			<input type="text" id="search" class="form-control" placeholder="Eg : Delhi" name="q" value="">
-		</div>
-		<div class="submit">
-			<p style="line-height: 40px; text-align: center;"><button type="submit" class="btn btn-warning " >Submit</button></p>
-		</div>
-	</form>
+	</div>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 	<script>
 		$(function() {
-			$('#mainForm').submit(function(event) {
+			$('#weatherForm').submit(function(event) {
 				event.preventDefault();
+
+				if($('#city-name').val() == ''){
+					return false;
+				}
+				$('#weatherForm button').html('Loading...').addClass('active disabled');
+				$('#weatherForm input').attr('disabled',true);
+
 				$.ajax({
-					url: 'http://api.openweathermap.org/data/2.5/find',
+					url: 'http://api.openweathermap.org/data/2.5/weather',
 					type: 'get',
 					dataType: 'json',
 					data: {
-						q: $("#search").val(),
+						q: $("#city-name").val(),
 						units: "metric",
 						appid: "2de143494c0b295cca9337e1e96b00e0"
 					},
 				})
 				.done(function(data) {
-					$('#display').html('<h1 style="font-size:5em;">'+data.list[0].main.temp+'&deg;C</h1>');
-					console.log(data);
-					console.log("success");
+					$('.content .weather-form').slideUp();
+					$('.content .weather-results .data-city-name').html(data.name);
+					$('.content .weather-results .data-temp').html(Math.round(data.main.temp));
+					$('.content .weather-results .data-weather').html(data.weather[0].main);
+					$('.content .weather-results .data-humidity').html(data.main.humidity);
+					$('.content .weather-results .data-pressure').html(data.main.pressure);
+					$('.content .weather-results .data-wind').html(data.wind.speed);
+					$('#weather-img').attr('src','http://openweathermap.org/img/w/'+data.weather[0].icon+'.png');
+					$('.content .weather-results').slideDown();
 				})
 				.fail(function() {
-					console.log("error");
-				})
-				.always(function() {
-					console.log("complete");
-				});				
+					window.alert('Error!');
+				});
+
 			});
-		});
-	</script>
+});
+</script>
 </body>
 </html>
 
 
-     
+
