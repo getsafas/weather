@@ -7,13 +7,21 @@ div.header {
     text-align: center;
     font-family: "agency FB", sans-serif;
     font-size: 30px;
-    color:#7ADDDD;
+}
+
+div.header a {
+    text-decoration: none;
+    color:#9CFCFC;
+}
+
+div.header a:hover {
+    opacity: 0.8;
 }
 
 div.content {
     background:rgba(200,200,200,.4);
     width: 300px;
-    margin: 10% auto;
+    margin: 10% auto 0;
     padding: 20px;
     border-radius: 10px;
 }
